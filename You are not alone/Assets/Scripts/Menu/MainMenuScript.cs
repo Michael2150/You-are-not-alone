@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 
 public class MainMenuScript : MonoBehaviour
 {
+    [SerializeField] private bool isVisibleOnStart = true;
+    
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _modeButton;
     [SerializeField] private Button _exitButton;
@@ -17,6 +19,8 @@ public class MainMenuScript : MonoBehaviour
     [SerializeField] private long _seed;
     [SerializeField] private long _lastSeed;
     
+    [SerializeField] private GamemodeScript _gamemodeScript;
+
     public long lastSeed
     {
         get => _lastSeed;
@@ -46,8 +50,10 @@ public class MainMenuScript : MonoBehaviour
         long randomSeed = (long)Random.Range(1000000000000000, 9999999999999999);
         seed = randomSeed;
         lastSeed = randomSeed;
+        
+        setVisible(gameObject, isVisibleOnStart);
     }
-    
+
     private void Play()
     {
         Debug.Log("Play");
@@ -55,7 +61,8 @@ public class MainMenuScript : MonoBehaviour
     
     private void Mode()
     {
-        Debug.Log("Mode");
+        setVisible(gameObject, false);
+        _gamemodeScript.setVisible(true);
     }
     
     private void copySeed()
@@ -67,5 +74,31 @@ public class MainMenuScript : MonoBehaviour
     {
         //Close the game
         Application.Quit();
+    }
+
+    public void setVisible(bool visible)
+    {
+        setVisible(gameObject, visible);
+    }
+
+    private void setVisible(GameObject go, bool visible)
+    {
+        foreach (Transform child in go.transform)
+        {
+            setVisible(child.gameObject, visible);
+        }
+        
+        if (go.GetComponent<TMP_Text>() != null)
+        {
+            go.GetComponent<TMP_Text>().enabled = visible;
+        }
+        if (go.GetComponent<Image>() != null)
+        {
+            go.GetComponent<Image>().enabled = visible;
+        }
+        if (go.GetComponent<Button>() != null)
+        {
+            go.GetComponent<Button>().enabled = visible;
+        }
     }
 }
