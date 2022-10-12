@@ -56,7 +56,8 @@ public class MainMenuScript : MonoBehaviour
 
     private void Play()
     {
-        Debug.Log("Play");
+        //Play the debug scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Playground");
     }
     
     private void Mode()
