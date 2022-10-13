@@ -9,6 +9,7 @@ using UnityEngine.UI;
 
 public class SplashScreenScript : MonoBehaviour
 {
+    public bool debug = false;
     private float timer = 0f;
     private float new_char_timer = 0f;
     private float fade_timer = 0f;
@@ -31,7 +32,7 @@ public class SplashScreenScript : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (text_index >= splashTexts.Count)
+        if (text_index >= splashTexts.Count || debug)
         {
             //Start fading out the image
             fade_timer += Time.deltaTime;

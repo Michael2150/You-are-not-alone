@@ -662,6 +662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1e8877f433fcec4b95c783130d9e894, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debug: 0
   splashTexts:
   - Headphones are recommended
   - Flashing lights warning !
@@ -3058,6 +3059,7 @@ GameObject:
   - component: {fileID: 1387931170}
   - component: {fileID: 1387931169}
   - component: {fileID: 1387931168}
+  - component: {fileID: 1387931171}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3123,7 +3125,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1387931164}
-  m_LocalRotation: {x: 0.015884418, y: 0.043008856, z: -0.00064904697, w: 0.9989482}
+  m_LocalRotation: {x: -0.085001715, y: -0.01966086, z: -0.0027455448, w: 0.99618304}
   m_LocalPosition: {x: -0.42205328, y: 1.3702228, z: -12.116384}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3131,7 +3133,7 @@ Transform:
   - {fileID: 1626091009}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 1.822, y: -0.417, z: 0.004}
+  m_LocalEulerAnglesHint: {x: -9.757, y: -2.251, z: -0.124}
 --- !u!114 &1387931168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3237,6 +3239,23 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &1387931171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387931164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d037e1fb0f8d3f24cb5ae6818ace97fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  intensity: 0.08
+  speed: 0.18
+  x_enabled: 1
+  y_enabled: 1
+  z_enabled: 0
 --- !u!1 &1450611525
 GameObject:
   m_ObjectHideFlags: 0
