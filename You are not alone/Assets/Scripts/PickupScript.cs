@@ -12,7 +12,7 @@ public class PickupScript : MonoBehaviour{
             //Play pickup sound
             AudioSource.PlayClipAtPoint(pickupSound, transform.position);
             //Play pickup effect
-            Instantiate(pickupEffect, transform.position, transform.rotation);
+            //Instantiate(pickupEffect, transform.position, transform.rotation);
             //Destroy the key shard
             Destroy(gameObject);
         }
