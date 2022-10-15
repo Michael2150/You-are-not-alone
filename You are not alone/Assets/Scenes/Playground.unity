@@ -3752,6 +3752,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1744382296 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1823360784142033879, guid: 1b12c664068bcb2408651c4b3666b8df,
+    type: 3}
+  m_PrefabInstance: {fileID: 3191810133711282779}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1764214107
 GameObject:
   m_ObjectHideFlags: 0
@@ -4057,10 +4063,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 633017468313584417, guid: 1b12c664068bcb2408651c4b3666b8df,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 856998646717069077, guid: 1b12c664068bcb2408651c4b3666b8df,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1823360784142033879, guid: 1b12c664068bcb2408651c4b3666b8df,
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823360784142033879, guid: 1b12c664068bcb2408651c4b3666b8df,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2953059411642288773, guid: 1b12c664068bcb2408651c4b3666b8df,
         type: 3}
@@ -4070,7 +4091,7 @@ PrefabInstance:
     - target: {fileID: 2953059411642288773, guid: 1b12c664068bcb2408651c4b3666b8df,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 41.92
       objectReference: {fileID: 0}
     - target: {fileID: 2953059411642288773, guid: 1b12c664068bcb2408651c4b3666b8df,
         type: 3}
@@ -4080,7 +4101,7 @@ PrefabInstance:
     - target: {fileID: 2953059411642288773, guid: 1b12c664068bcb2408651c4b3666b8df,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -12.16
       objectReference: {fileID: 0}
     - target: {fileID: 2953059411642288773, guid: 1b12c664068bcb2408651c4b3666b8df,
         type: 3}
@@ -4116,6 +4137,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9158806777424221629, guid: 1b12c664068bcb2408651c4b3666b8df,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1b12c664068bcb2408651c4b3666b8df, type: 3}
@@ -4208,7 +4234,7 @@ PrefabInstance:
     - target: {fileID: 4633601958372566506, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.57
+      value: 41.89
       objectReference: {fileID: 0}
     - target: {fileID: 4633601958372566506, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
         type: 3}
@@ -4218,7 +4244,7 @@ PrefabInstance:
     - target: {fileID: 4633601958372566506, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.47
+      value: -17.12
       objectReference: {fileID: 0}
     - target: {fileID: 4633601958372566506, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
         type: 3}
@@ -4255,10 +4281,60 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1744382296}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: attackSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: fieldOfView
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: attackDamage
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: viewDistance
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: attackCooldown
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: hearingDistance
+      value: 7.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: retreatDistance
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4925832476013875857, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: attackCooldownTimer
+      value: 0.33
+      objectReference: {fileID: 0}
     - target: {fileID: 8300544195467006225, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
         type: 3}
       propertyPath: m_Name
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 8300544195467006225, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2182b3011ae41c44e8d9dbe2e4dc44eb, type: 3}
@@ -4290,36 +4366,3 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &5810429502657622683
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5810429502657622681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3709ba5b3a041449b777930f714fad4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  stoppingDistance: 1
-  retreatDistance: 20
-  attackRange: 1
-  attackSpeed: 0.5
-  attackDamage: 50
-  attackCooldown: 0.21
-  attackCooldownTimer: 0.33
-  attackTimer: 0
-  player: {fileID: 0}
-  agent: {fileID: 0}
-  animator: {fileID: 0}
-  fieldOfView: 14.7
-  viewDistance: 8.27
-  hearingDistance: 7.05
-  hearingRange: 0
-  playerDetected: 0
-  playerInAttackRange: 0
-  playerInHearingRange: 0
-  playerInFieldOfView: 0
-  playerInSight: 0
