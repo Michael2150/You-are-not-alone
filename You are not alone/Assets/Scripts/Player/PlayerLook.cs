@@ -22,6 +22,9 @@ namespace Player
         private void Start()
         {
             _inputManager = GetComponent<PlayerInputManager>();
+            
+            // Lock and hide the cursor
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()

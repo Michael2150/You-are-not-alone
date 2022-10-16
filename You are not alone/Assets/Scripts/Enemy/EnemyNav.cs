@@ -1,13 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 namespace Enemy
 {
     public class EnemyNav : MonoBehaviour
     {
+        [Header("Movement")]
         public float speed;
         public float stoppingDistance;
-        public float retreatDistance;
+        private Vector3 _newPosition;
+        
+        [Header("Attack")]
         public float attackRange;
         public float attackSpeed;
         public float attackDamage;
@@ -15,30 +22,56 @@ namespace Enemy
         public float attackCooldownTimer;
         public float attackTimer;
         public bool isAttacking;
-    
+        
+        [Header("References")]
         public GameObject player;
         public NavMeshAgent agent;
-        private Vector3 _newPosition;
-    
+        
+        [Header("Sight")]
         public float fieldOfView;
         public float viewDistance;
-        public float hearingDistance;
+        public LayerMask layerToSee;
 
         private void Start()
         {
-            player = GameObject.FindGameObjectWithTag("Player");
-            agent = GetComponent<NavMeshAgent>();
+            if (player == null)
+                player = GameObject.FindGameObjectWithTag("Player");
+
+            if (agent == null)
+                agent = GetComponent<NavMeshAgent>();
+
+            agent.speed = speed;
+            agent.stoppingDistance = stoppingDistance;
         }
 
         private void Update()
         {
-        
+            //If the player is in the enemy's field of view and within the enemy's view distance, the enemy will move towards the player, else tha enemy will roam around
+            if (inFOV)
+            {
+                Position = (player.transform.position);
+            }
+            else
+            {
+                //If the enemy is not moving, it will generate a new position to move to
+                if (!agent.hasPath)
+                {
+                    Position += new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
+                } else if (agent.remainingDistance <= agent.stoppingDistance) //If the enemy is close enough to the position it is moving to, it will generate a new position to move to
+                {
+                    Position += new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
+                }
+            }
         }
 
-        
         private Vector3 Position
         {
-            get => _newPosition;
+            get
+            {
+                if (_newPosition == Vector3.zero)
+                    _newPosition = transform.position;
+                return _newPosition;
+            }
             set
             {
                 _newPosition = value;
@@ -53,46 +86,14 @@ namespace Enemy
                 //Check if the player is within the field of view
                 Vector3 direction = player.transform.position - transform.position;
                 float angle = Vector3.Angle(direction, transform.forward);
-                if (angle > fieldOfView)
+                if (angle > fieldOfView * 0.5f)
                     return false;
 
                 //Check whether the player is within the view distance
                 if (direction.magnitude > viewDistance)
                     return false;
                 
-                //Check every object between the enemy and the player while ignoring the enemy layer
-                GameObject closestObject = null;
-                float closestDistance = Mathf.Infinity;
-                RaycastHit[] hits = new RaycastHit[] { };
-                var enemyLayer = LayerMask.NameToLayer("Enemy");
-                for (int i = 0; i < Physics.RaycastNonAlloc(transform.position, direction.normalized, hits, direction.magnitude); i++)
-                {
-                    RaycastHit hit = hits[i];
-                    
-                    if (hit.collider.gameObject.layer == enemyLayer)
-                        continue;
-
-                    if (closestObject)
-                    {
-                        if (!(hit.distance < closestDistance)) 
-                            continue;
-                        
-                        closestObject = hit.collider.gameObject;
-                        closestDistance = hit.distance;
-                    } else {
-                        closestObject = hit.collider.gameObject;
-                        closestDistance = hit.distance;
-                    }
-                }
-                
-                //If there is nothing between the enemy and the player, return true
-                if (closestObject == null) 
-                    return false;
-                
-                //If the closest object is the player, return true
-                if (closestObject.CompareTag("Player"))
-                    return true;
-                return false;
+                return true;
             }
         }
     
@@ -109,14 +110,19 @@ namespace Enemy
         {
             //Draw FOV and if the player is in it
             Gizmos.color = player ? inFOV ? Color.green : Color.red : Color.yellow;
-            var transform1 = transform;
-            Gizmos.DrawRay(transform1.position, transform1.forward * viewDistance);
-            Gizmos.DrawRay(transform1.position, Quaternion.AngleAxis(fieldOfView * 0.5f, transform1.up) * transform1.forward * viewDistance);
-            Gizmos.DrawRay(transform1.position, Quaternion.AngleAxis(-fieldOfView * 0.5f, transform1.up) * transform1.forward * viewDistance);
-        
+            Gizmos.DrawRay(transform.position, transform.forward * viewDistance);
+            Gizmos.DrawRay(transform.position, 
+            Quaternion.AngleAxis(fieldOfView * 0.5f, transform.up) * transform.forward * viewDistance);
+            Gizmos.DrawRay(transform.position, 
+            Quaternion.AngleAxis(-fieldOfView * 0.5f, transform.up) * transform.forward * viewDistance);
+            
             //Draw attack range and if the player is in it
             Gizmos.color = player ? inAttackRange ? Color.green : Color.red : Color.red;
-            Gizmos.DrawWireSphere(transform1.position, attackRange);
+            Gizmos.DrawWireSphere(transform.position, attackRange);
+            
+            //Draw the position the enemy is moving to
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(Position, 0.5f);
         }
     }
 }

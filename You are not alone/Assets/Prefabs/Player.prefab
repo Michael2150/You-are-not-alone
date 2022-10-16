@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 6022226031417105113}
   - component: {fileID: 8488547707636928377}
   - component: {fileID: 1883580234902961626}
-  m_Layer: 0
+  - component: {fileID: 2084103345}
+  m_Layer: 3
   m_Name: First Person Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 633017468313584417}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.7499969, z: 0}
+  m_LocalPosition: {x: 0, y: 0.7499845, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -184,6 +185,14 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!81 &2084103345
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 633017468313584417}
+  m_Enabled: 1
 --- !u!1 &856998646717069077
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +205,7 @@ GameObject:
   - component: {fileID: 8168033323262056745}
   - component: {fileID: 3578694109791129382}
   - component: {fileID: 2442290742736275641}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,7 +305,7 @@ GameObject:
   - component: {fileID: 2706548020854799284}
   - component: {fileID: 8337668474722751816}
   - component: {fileID: 1742665263900362086}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -313,7 +322,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3450492485716764192}
   - {fileID: 8268363972705149147}
@@ -349,21 +358,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1bb35d19ec23a042a78abfaa254539e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 3
-  SprintSpeed: 10
-  SpeedChangeRate: 20
-  JumpStrength: 1
-  JumpHeight: 1.5
-  Gravity: -9.8
-  JumpTimeout: 0.1
-  FallTimeout: 0.15
-  Grounded: 1
-  GroundedOffset: -0.82
-  GroundedRadius: 0.4
-  GroundLayers:
-    serializedVersion: 2
-    m_Bits: 513
-  Crouching: 0
+  _controller: {fileID: 1742665263900362086}
+  speed: 5
+  runningSpeed: 10
+  jumpForce: 5
+  gravity: -9.81
+  _velocity: {x: 0, y: 0, z: 0}
+  _isGrounded: 0
 --- !u!114 &2706548020854799284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,7 +440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 582480025530644483}
   - component: {fileID: 7620984577754607584}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
