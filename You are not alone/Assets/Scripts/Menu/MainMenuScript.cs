@@ -54,9 +54,15 @@ public class MainMenuScript : MonoBehaviour
         setVisible(gameObject, isVisibleOnStart);
     }
 
+    private void Update()
+    {
+        if (Cursor.lockState != CursorLockMode.None)
+            Cursor.lockState = CursorLockMode.None;
+    }
+
     private void Play()
     {
-        //Play the debug scene
+        //Play the Playground scene and close this one
         UnityEngine.SceneManagement.SceneManager.LoadScene("Playground");
     }
     
