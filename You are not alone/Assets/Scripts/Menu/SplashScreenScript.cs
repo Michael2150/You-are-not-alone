@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameGlobals;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
@@ -27,12 +28,13 @@ public class SplashScreenScript : MonoBehaviour
     private void Start()
     {
         text.text = "";
+        Cursor.lockState = CursorLockMode.None;
     }
     
     // Update is called once per frame
     private void Update()
     {
-        if (text_index >= splashTexts.Count || debug)
+        if (text_index >= splashTexts.Count || debug || !GameManager.Instance.isFirstTime)
         {
             //Start fading out the image
             fade_timer += Time.deltaTime;
@@ -67,5 +69,7 @@ public class SplashScreenScript : MonoBehaviour
             if (text_index >= 0 && text_index < textSizes.Count)
                 text.fontSize = textSizes[text_index];
         }
+        
+        GameManager.Instance.isFirstTime = false;
     }
 }

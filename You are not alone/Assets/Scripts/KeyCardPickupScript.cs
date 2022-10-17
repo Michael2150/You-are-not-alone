@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 //Pickup script for the collectable key shards
 public class KeyCardPickupScript : MonoBehaviour{    
@@ -16,6 +17,10 @@ public class KeyCardPickupScript : MonoBehaviour{
         //Play pickup effect
         //Instantiate(pickupEffect, transform.position, transform.rotation);
         //Destroy the key shard
+        
+        //Load the menu scene
+        SceneManager.LoadScene("MainMenu");
+        
         Destroy(gameObject);
     }
 }
