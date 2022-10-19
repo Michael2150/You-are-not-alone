@@ -23,6 +23,9 @@ public class SplashScreenScript : MonoBehaviour
     public TMP_Text text;
     public Image image;
     public float fadeTime = 2f;
+    
+    public AudioSource audioSource;
+    public float menuAudioVolume = 0.7f;
 
     //Start is called before the first frame update
     private void Start()
@@ -37,9 +40,23 @@ public class SplashScreenScript : MonoBehaviour
         {
             GameManager.Instance.isFirstTime = false;
             
+            //Start playing the audio
+            if (!audioSource.isPlaying)
+            {
+                audioSource.loop = true;
+                audioSource.volume = 0f;
+                audioSource.Play();
+            }
+            else
+            {
+                audioSource.volume = (fade_timer / fadeTime) * menuAudioVolume;
+            }
+
             //Start fading out the image
             fade_timer += Time.deltaTime;
             image.color = new Color(image.color.r, image.color.g, image.color.b, 1 - (fade_timer / fadeTime));
+            
+            
             if (fade_timer >= fadeTime)
                 gameObject.SetActive(false);
         }
