@@ -303,6 +303,7 @@ GameObject:
   - component: {fileID: 4058542341153360439}
   - component: {fileID: 2191028389851746883}
   - component: {fileID: 2706548020854799284}
+  - component: {fileID: 9017634632533996298}
   - component: {fileID: 8337668474722751816}
   - component: {fileID: 1742665263900362086}
   m_Layer: 3
@@ -361,10 +362,11 @@ MonoBehaviour:
   _controller: {fileID: 1742665263900362086}
   speed: 5
   runningSpeed: 10
+  time_to_max_speed: 0.1
   jumpForce: 5
   gravity: -9.81
   _velocity: {x: 0, y: 0, z: 0}
-  _isGrounded: 0
+  _currentSpeed: 0
 --- !u!114 &2706548020854799284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,6 +383,23 @@ MonoBehaviour:
   TopClamp: 90
   BottomClamp: -90
   RotationSpeed: 2
+--- !u!114 &9017634632533996298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823360784142033879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 909d917d73a63f940ac158d02e936645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pushLayers:
+    serializedVersion: 2
+    m_Bits: 2147483647
+  canPush: 1
+  strength: 1.1
 --- !u!114 &8337668474722751816
 MonoBehaviour:
   m_ObjectHideFlags: 0
