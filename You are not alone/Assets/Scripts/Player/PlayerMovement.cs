@@ -12,7 +12,7 @@ namespace Player
 		[Header("Movement")]
 		public float speed = 5f;
 		public float runningSpeed = 10f;
-		public float time_to_max_speed = 0.1f;
+		public float crouchSpeed = 2f;
 
 		[Header("Jumping")]
 		public float jumpForce = 5f;
@@ -21,6 +21,7 @@ namespace Player
 		[Header("Debug")]
 		[SerializeField] private Vector3 _velocity;
 		[SerializeField] private float _currentSpeed;
+		[SerializeField] private bool _crouching;
 
 		private void Start()
 		{
@@ -35,13 +36,25 @@ namespace Player
 			CalculateJumping();
 			//Apply the resulting velocity to the controller
 			_controller.Move(_velocity * Time.deltaTime);
+			
+			
+		}
+		
+		public bool isCrouching
+		{
+			get => _crouching;
+			set
+			{
+				
+			}
 		}
 
 		private void CalculateMovement()
 		{
 			//Calculate movement velocity from the input
 			var input = _inputManager.MovementInput * 
-			            (_inputManager.SprintInput ? runningSpeed : speed);
+							(_inputManager.CrouchInput ? crouchSpeed : 
+				            (_inputManager.SprintInput ? runningSpeed : speed));
 			
 			var targetVelocity = new Vector3(input.x, _velocity.y, input.y);
 			targetVelocity = transform.TransformDirection(targetVelocity);
