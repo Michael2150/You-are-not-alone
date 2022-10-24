@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
 public class LevelGenerationScript : MonoBehaviour
@@ -10,6 +11,14 @@ public class LevelGenerationScript : MonoBehaviour
     public int seed;
     public Vector2 mapSize;
     public Vector3 tileSize;
+
+    private void Update()
+    {
+        if (Keyboard.current.bKey.wasPressedThisFrame)
+        {
+            GenerateLevel();
+        }
+    }
 
     public void GenerateLevel()
     {
@@ -31,9 +40,6 @@ public class LevelGenerationScript : MonoBehaviour
                 tile.isStatic = true;
             }
         }
-        
-        //Bake the lighting
-        //Lightmapping.Bake();
     } 
     
     public void ClearLevel()
