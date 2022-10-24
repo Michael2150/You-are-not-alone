@@ -9,7 +9,7 @@ public class RotateScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Rotate this object around its local Y axis at 1 degree per second
+        //Rotate this object around the global Y axis at 1 degree per second
         transform.Rotate(Vector3.up * (Time.deltaTime * speed));
     }
 }

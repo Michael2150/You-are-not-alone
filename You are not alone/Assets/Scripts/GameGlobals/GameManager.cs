@@ -5,6 +5,7 @@ namespace GameGlobals
     public class GameManager : MonoBehaviour
     {
         private static GameManager _instance;
+        public bool isFirstTime = true;
         public static GameManager Instance
         {
             get
@@ -25,7 +26,8 @@ namespace GameGlobals
             else
                 Destroy(gameObject);
         }
-    
-        public bool isFirstTime = true;
+
+
+
     }
 }
