@@ -48,9 +48,19 @@ namespace GameGlobals
             _tempTexture.ReadPixels(new Rect(0, 0, _tempRenderTexture.width, _tempRenderTexture.height), 0, 0);
             _tempTexture.Apply();
             //Get the average color of the Texture2D
-            var averageColor = _tempTexture.GetPixelBilinear(0.5f, 0.5f);
-            //Set the light level to the average color's alpha value
-            lightLevel = averageColor.a;
+            Color[] pixels = _tempTexture.GetPixels();
+            float[] averageColor = new float[3];
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                averageColor[0] += pixels[i].r;
+                averageColor[1] += pixels[i].g;
+                averageColor[2] += pixels[i].b;                
+            }
+            averageColor[0] /= pixels.Length;
+            averageColor[1] /= pixels.Length;
+            averageColor[2] /= pixels.Length;
+            //Set the light level to the average color
+            lightLevel = (averageColor[0] + averageColor[1] + averageColor[2]) / 3;
             //Release the temporary RenderTexture and Texture2D
             RenderTexture.ReleaseTemporary(_tempRenderTexture);
             Destroy(_tempTexture);
