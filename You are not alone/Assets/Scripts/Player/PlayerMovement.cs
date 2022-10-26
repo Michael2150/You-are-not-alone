@@ -17,27 +17,39 @@ namespace Player
 		[Header("Jumping")]
 		public float jumpForce = 5f;
 		public float gravity = -9.81f;
+		
+		[Header("Crouching")]
+		public float crouchHeight = 1f;
+		public float crouchSpeedMultiplier = 0.5f;
 
 		[Header("Debug")]
-		[SerializeField] private Vector3 _velocity;
+		[SerializeField] public Vector3 _velocity;
 		[SerializeField] private float _currentSpeed;
 		[SerializeField] private bool _crouching;
+		
+		//Cache variables
+		private Camera _playerCamera;
+		private float _defaultHeight;
 
 		private void Start()
 		{
 			_controller = GetComponent<CharacterController>();
 			_inputManager = GetComponent<PlayerInputManager>();
 			_velocity = Vector3.zero;
+			_playerCamera = Camera.main;
+			_defaultHeight = _controller.height;
 		}
 
 		private void Update()
 		{
+			//Movement
 			CalculateMovement();
 			CalculateJumping();
 			//Apply the resulting velocity to the controller
 			_controller.Move(_velocity * Time.deltaTime);
 			
-			
+			//Crouching
+			HandleCrouch();
 		}
 
 		private void CalculateMovement()
@@ -67,6 +79,14 @@ namespace Player
 				else
 					_velocity.y += gravity * Time.deltaTime;
 			}
+		}
+		
+		private void HandleCrouch()
+		{
+			//Crouching
+			if (_inputManager.CrouchInput == _crouching) return;
+			
+			_crouching = _inputManager.CrouchInput;
 		}
 
 		private void OnDrawGizmos()

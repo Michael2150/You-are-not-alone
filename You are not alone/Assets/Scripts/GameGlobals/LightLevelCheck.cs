@@ -32,10 +32,10 @@ namespace GameGlobals
             }
 
             _timer = checkRate;
-            StartCoroutine(CheckLightLevel());
+            CheckLightLevel();
         }
         
-        private IEnumerator CheckLightLevel()
+        private void CheckLightLevel()
         {
             //Create a temporary RenderTexture to store the light level
             _tempRenderTexture = RenderTexture.GetTemporary(lightLevelTexture.width, lightLevelTexture.height, 0, RenderTextureFormat.ARGB32);
@@ -49,8 +49,8 @@ namespace GameGlobals
             _tempTexture.Apply();
             //Get the average color of the Texture2D
             Color[] pixels = _tempTexture.GetPixels();
-            float[] averageColor = new float[3];
-            for (int i = 0; i < pixels.Length; i++)
+            double[] averageColor = new double[3];
+            for (var i = 0; i < pixels.Length; i+=5)
             {
                 averageColor[0] += pixels[i].r;
                 averageColor[1] += pixels[i].g;
@@ -60,12 +60,10 @@ namespace GameGlobals
             averageColor[1] /= pixels.Length;
             averageColor[2] /= pixels.Length;
             //Set the light level to the average color
-            lightLevel = (averageColor[0] + averageColor[1] + averageColor[2]) / 3;
+            lightLevel = (float)((averageColor[0] + averageColor[1] + averageColor[2]) / 3);
             //Release the temporary RenderTexture and Texture2D
             RenderTexture.ReleaseTemporary(_tempRenderTexture);
             Destroy(_tempTexture);
-            //Wait for the next frame
-            yield return null;
         }
     }
 }
