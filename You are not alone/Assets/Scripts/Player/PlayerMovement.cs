@@ -39,15 +39,6 @@ namespace Player
 			
 			
 		}
-		
-		public bool isCrouching
-		{
-			get => _crouching;
-			set
-			{
-				
-			}
-		}
 
 		private void CalculateMovement()
 		{
