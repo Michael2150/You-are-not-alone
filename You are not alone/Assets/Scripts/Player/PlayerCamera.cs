@@ -40,7 +40,7 @@ namespace Player
             Cursor.lockState = CursorLockMode.Locked;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             //Add the mouse input to the rotation
             rotation.x += _inputManager.CameraInput.y * RotationSpeed;

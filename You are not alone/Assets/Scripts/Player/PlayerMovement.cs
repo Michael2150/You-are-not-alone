@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player
@@ -13,20 +14,26 @@ namespace Player
 		public float speed = 5f;
 		public float runningSpeed = 10f;
 		public float crouchSpeed = 2f;
+		public List<AudioClip> footstepSounds;
 
 		[Header("Jumping")]
 		public float jumpForce = 5f;
 		public float gravity = -9.81f;
+		public AudioClip jumpSound;
+		public AudioClip landSound;
 		
 		[Header("Crouching")]
 		public float crouchHeight = 1f;
 		public float crouchSpeedMultiplier = 0.5f;
+		public float crouchTime = 1f;
+		private float _crouchTimer = 0f;
+		private AudioClip _crouchSound;
 
 		[Header("Debug")]
 		[SerializeField] public Vector3 _velocity;
 		[SerializeField] private float _currentSpeed;
 		[SerializeField] private bool _crouching;
-		
+
 		//Cache variables
 		private Camera _playerCamera;
 		private float _defaultHeight;
@@ -37,17 +44,16 @@ namespace Player
 			_inputManager = GetComponent<PlayerInputManager>();
 			_velocity = Vector3.zero;
 			_playerCamera = Camera.main;
-			_defaultHeight = _controller.height;
+			_defaultHeight = transform.localScale.y;
 		}
 
-		private void Update()
+		private void FixedUpdate()
 		{
 			//Movement
 			CalculateMovement();
 			CalculateJumping();
 			//Apply the resulting velocity to the controller
 			_controller.Move(_velocity * Time.deltaTime);
-			
 			//Crouching
 			HandleCrouch();
 		}
@@ -77,16 +83,27 @@ namespace Player
 				if (_controller.isGrounded)
 					_velocity.y = 0;
 				else
-					_velocity.y += gravity * Time.deltaTime;
+					_velocity.y += gravity * Time.fixedDeltaTime;
 			}
 		}
 		
 		private void HandleCrouch()
 		{
 			//Crouching
-			if (_inputManager.CrouchInput == _crouching) return;
-			
 			_crouching = _inputManager.CrouchInput;
+
+			//Check animation time between crouching and standing
+			if (_crouching && (_crouchTimer >= crouchTime))
+				return;
+			if (!_crouching && (_crouchTimer <= 0))
+				return;
+			
+			//Increase/Decrease the crouch timer
+			_crouchTimer += (_crouching ? 1 : -1) * Time.fixedDeltaTime;
+			//Calculate the new height with a sin wave lerp
+			var newHeight = Mathf.Lerp(_defaultHeight, crouchHeight, Mathf.Sin(_crouchTimer / crouchTime * Mathf.PI / 2));
+			//Set the new height to the scale of the gameobject
+			transform.localScale = new Vector3(1, newHeight, 1);
 		}
 
 		private void OnDrawGizmos()

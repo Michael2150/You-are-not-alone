@@ -16,9 +16,9 @@ TagManager:
   - Collectables
   - Enemy
   - Ground
-  - 
-  - 
-  - 
+  - Hideable
+  - PlayerModel
+  - PlayerLightLayer
   - 
   - 
   - 
