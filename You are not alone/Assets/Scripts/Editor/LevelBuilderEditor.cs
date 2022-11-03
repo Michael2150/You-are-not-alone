@@ -11,8 +11,8 @@ namespace Editor
         {
             base.OnInspectorGUI();
             
-            var levelBuilder = (LevelBuilderScript) target;   
-            
+            var levelBuilder = (LevelBuilderScript) target;
+
             if (GUILayout.Button("Build Level"))
                 levelBuilder.BuildLevel();
 

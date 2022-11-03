@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Enums;
 using Generation.VazGriz_Generation_Scripts;
 using UnityEngine;
@@ -17,16 +18,16 @@ namespace Generation
             Outside = 2,
         }
 
-        public bool NeighbourCheck(Grid2D<CellState> grid, Vector2Int pos)
+        public bool NeighbourCheck(Grid2D<CellState> grid, Vector2Int pos, out List<Vector3> validDirections)
         {
+            //Assign the out variable
+            validDirections = new List<Vector3>();           
+            
             // Check validity of parameters
             if (grid == null) return false;
             if (grid.Size.x < 3 || grid.Size.y < 3) return false;
             if (pos.x < 0 || pos.y < 0) return false;
             if (pos.x >= grid.Size.x || pos.y >= grid.Size.y) return false;
-            
-            // Check current cell
-            if (!EnumHelpers.CellIsOccupied(grid[pos])) return false;
 
             bool result = false;
             
@@ -35,8 +36,6 @@ namespace Generation
             {
                 // Rotate the neighbours grid
                 Rotate(ref Neighbours);
-                
-                if (result) continue;
 
                 // For each cell in the neighbours grid
                 var valid = true;
@@ -59,7 +58,12 @@ namespace Generation
                     }
                     if (!valid) break;
                 }
-                if (valid) result = true;
+
+                if (valid)
+                {
+                    result = true;
+                    validDirections.Add(new Vector3(0, rotation_itt * -90, 0));
+                }
             }
             return result;
         }

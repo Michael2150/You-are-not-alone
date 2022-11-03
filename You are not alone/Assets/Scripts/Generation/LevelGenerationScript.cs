@@ -23,7 +23,9 @@ namespace Generation
         [Range(0,10)] [SerializeField] private int hallwayPathCost = 1;
         
         [Header("Debug")]
-        [SerializeField] private bool _showGrid = true;
+        [SerializeField] private bool _showGrid = false;
+        [SerializeField] private bool _showPath = true;
+        [SerializeField] private bool _showRooms = true;
         
         private Random _random;
         private Grid2D<CellState> _grid;
@@ -52,8 +54,8 @@ namespace Generation
         {
             for (int i = 0; i < roomCount; i++) {
                 Vector2Int location = new Vector2Int(
-                    _random.NextInt(0, mapSize.x+1),
-                    _random.NextInt(0, mapSize.y+1)
+                    _random.NextInt(1, mapSize.x+1),
+                    _random.NextInt(1, mapSize.y+1)
                 );
         
                 Vector2Int roomSize = new Vector2Int(
@@ -85,7 +87,7 @@ namespace Generation
                 }
             }
         }
-        
+
         private void Triangulate() {
             List<Vertex> vertices = new List<Vertex>();
         
@@ -184,30 +186,30 @@ namespace Generation
         private void OnDrawGizmos()
         {
             //Draw the grid
-            if (_showGrid)
+            if (_grid != null)
             {
-                if (_grid != null)
+                for (int x = 0; x < _grid.Size.x; x++)
                 {
-                    for (int x = 0; x < _grid.Size.x; x++)
+                    for (int y = 0; y < _grid.Size.y; y++)
                     {
-                        for (int y = 0; y < _grid.Size.y; y++)
+                        var pos = new Vector3(x*blockSize.x, 0, y*blockSize.z);
+                        var cell = _grid[x, y];
+                        switch (cell)
                         {
-                            var pos = new Vector3(x*blockSize.x, 0, y*blockSize.y);
-                            var cell = _grid[x, y];
-                            switch (cell)
-                            {
-                                case CellState.Room:
-                                    Gizmos.color = new Color(1, 0, 0, 0.5f);
-                                    break;
-                                case CellState.Hallway:
-                                    Gizmos.color = new Color(0, 1, 0, 0.5f);
-                                    break;
-                                default:
-                                    Gizmos.color = new Color(1,1,1, 0.1f);
-                                    break;
-                            }
-                            Gizmos.DrawCube(pos, blockSize);
+                            case CellState.Room:
+                                if (!_showRooms) continue;
+                                Gizmos.color = new Color(1, 0, 0, 0.5f);
+                                break;
+                            case CellState.Hallway:
+                                if (!(_showPath)) continue;
+                                Gizmos.color = new Color(0, 1, 0, 0.5f);
+                                break;
+                            default:
+                                if (!_showGrid) continue;
+                                Gizmos.color = new Color(1,1,1, 0.1f);
+                                break;
                         }
+                        Gizmos.DrawCube(pos, blockSize);
                     }
                 }
             }
