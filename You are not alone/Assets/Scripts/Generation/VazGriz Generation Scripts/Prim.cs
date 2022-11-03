@@ -4,6 +4,8 @@ using UnityEngine;
 using Graphs;
 
 public static class Prim {
+    
+    [Serializable]
     public class Edge : Graphs.Edge {
         public float Distance { get; private set; }
 

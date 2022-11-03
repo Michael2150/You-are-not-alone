@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class Grid2D<T> {
-    T[] data;
+    [SerializeField] private T[] data;
 
     public Vector2Int Size { get; private set; }
     public Vector2Int Offset { get; set; }
