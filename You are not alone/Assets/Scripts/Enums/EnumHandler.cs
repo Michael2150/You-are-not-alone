@@ -1,6 +1,8 @@
-﻿namespace Enums
+﻿using UnityEngine;
+
+namespace Enums
 {
-    public class EnumHelpers
+    public static class EnumHelpers
     {
         public static bool CellIsOccupied(CellState state)
         {
@@ -24,6 +26,8 @@
                     return allowed_val == received_val;
             }
         }
+        
+        
     }
     
     public enum CellState
@@ -34,5 +38,14 @@
         Room = 3,
         Any = 4,
         OutOfBounds = 5
+    }
+
+    public enum PlayerPrefKeys
+    {
+        HIGH_SCORE = 0,
+        HIGH_SCORE_NAME = 1,
+        MUSIC_VOLUME = 2,
+        SFX_VOLUME = 3,
+        DIFFICULTY = 4,
     }
 }

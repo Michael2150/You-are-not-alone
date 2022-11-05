@@ -25,8 +25,9 @@ THE SOFTWARE.*/
 
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Generation.VazGriz_Generation_Scripts;
 using Graphs;
+using UnityEngine;
 
 public class Delaunay2D {
     public class Triangle : IEquatable<Triangle> {

@@ -18,6 +18,8 @@ namespace Editor
 
             if (GUILayout.Button("Clear Level"))
                 levelBuilder.DestroyLevel();
+            
+            
         }
     }
 }

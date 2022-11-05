@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Enums;
 using Generation.VazGriz_Generation_Scripts;
 using Graphs;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
@@ -16,26 +17,26 @@ namespace Generation
         [SerializeField] private Vector2Int minRoomSize = Vector2Int.one;
         [SerializeField] private Vector2Int maxRoomSize = Vector2Int.one;
         [SerializeField] private int roomCount = 10;
-        
-        [Header("Pathfinding Settings")]
-        [Range(0,10)] [SerializeField] private int roomPathCost = 10;
-        [Range(0,10)] [SerializeField] private int nonePathCost = 5;
-        [Range(0,10)] [SerializeField] private int hallwayPathCost = 1;
-        
+
         [Header("Debug")]
-        [SerializeField] private bool _showGrid = false;
-        [SerializeField] private bool _showPath = true;
-        [SerializeField] private bool _showRooms = true;
-        
+        [SerializeField] private bool showGrid = false;
+        [SerializeField] private bool showPath = true;
+        [SerializeField] private bool showRooms = true;
+
+        private const int RoomPathCost = 10;
+        private const int NonePathCost = 5;
+        private const int HallwayPathCost = 1;
+
         private Random _random;
         private Grid2D<CellState> _grid;
         private List<Generator2D.Room> _rooms;
         private Delaunay2D _delaunay;
         private HashSet<Prim.Edge> _selectedEdges;
-        
+        private Graph<Vector2Int> _roomsGraph;
+
         public Grid2D<CellState> Grid => _grid;
         public Vector3Int BlockSize => blockSize;
-        
+
         public Grid2D<CellState> GenerateLevel()
         {
             _random = new Random(seed: (uint)seed);
@@ -46,10 +47,65 @@ namespace Generation
             Triangulate();
             CreateHallways();
             PathfindHallways();
+            PrintRoomAndHallwayCount();
+            CreateGraph();
 
             return _grid;
         }
-        
+
+        private void PrintRoomAndHallwayCount()
+        {
+            //Log the amount of rooms and hallways in the grid2d
+            int roomCount = 0;
+            int hallwayCount = 0;
+            for (int x = 0; x < _grid.Size.x; x++)
+            {
+                for (int y = 0; y < _grid.Size.y; y++)
+                {
+                    if (_grid[x, y] == CellState.Room)
+                    {
+                        roomCount++;
+                    }
+                    else if (_grid[x, y] == CellState.Hallway)
+                    {
+                        hallwayCount++;
+                    }
+                }
+            }
+            Debug.Log($"Rooms: {roomCount}, Hallways: {hallwayCount}, Active: {roomCount + hallwayCount}");
+        }
+
+        private void CreateGraph()
+        {
+            _roomsGraph = new Graph<Vector2Int>();
+            for (int x = 0; x < _grid.Size.x; x++)
+            {
+                for (int y = 0; y < _grid.Size.y; y++)
+                {
+                    if (EnumHelpers.CellIsOccupied(_grid[x, y]))
+                    {
+                        //Check the cells around it
+                        for (int i = -1; i <= 1; i++)
+                        {
+                            for (int j = -1; j <= 1; j++)
+                            {
+                                if (i == 0 && j == 0) continue;
+                                if (x + i < 0 || x + i >= _grid.Size.x) continue;
+                                if (y + j < 0 || y + j >= _grid.Size.y) continue;
+                                if (EnumHelpers.CellIsOccupied(_grid[x + i, y + j]))
+                                {
+                                    var vector2Int = new Vector2Int(x, y);
+                                    var vector2Int1 = new Vector2Int(x + i, y + j);
+                                    _roomsGraph.AddEdge(vector2Int, vector2Int1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Debug.Log($"Vertices: {_roomsGraph.VertexCount}, Edges: {_roomsGraph.EdgeCount}");
+        }
+
         private void PlaceRooms()
         {
             for (int i = 0; i < roomCount; i++) {
@@ -79,8 +135,6 @@ namespace Generation
         
                 if (add) {
                     _rooms.Add(newRoom);
-                    //TODO: PlaceRoom(newRoom.Bounds.position, newRoom.Bounds.size);
-        
                     foreach (var pos in newRoom.Bounds.allPositionsWithin) {
                         _grid[pos] = CellState.Room;
                     }
@@ -137,13 +191,13 @@ namespace Generation
         
                     if (_grid[b.Position] == CellState.Room)
                     {
-                        pathCost.cost += roomPathCost;
+                        pathCost.cost += RoomPathCost;
                     } else if (_grid[b.Position] == CellState.None)
                     {
-                        pathCost.cost += nonePathCost;
+                        pathCost.cost += NonePathCost;
                     } else if (_grid[b.Position] == CellState.Hallway)
                     {
-                        pathCost.cost += hallwayPathCost;
+                        pathCost.cost += HallwayPathCost;
                     }
         
                     pathCost.traversable = true;
@@ -197,15 +251,15 @@ namespace Generation
                         switch (cell)
                         {
                             case CellState.Room:
-                                if (!_showRooms) continue;
+                                if (!showRooms) continue;
                                 Gizmos.color = new Color(1, 0, 0, 0.5f);
                                 break;
                             case CellState.Hallway:
-                                if (!(_showPath)) continue;
+                                if (!(showPath)) continue;
                                 Gizmos.color = new Color(0, 1, 0, 0.5f);
                                 break;
                             default:
-                                if (!_showGrid) continue;
+                                if (!showGrid) continue;
                                 Gizmos.color = new Color(1,1,1, 0.1f);
                                 break;
                         }
