@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Generation;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -12,7 +13,9 @@ namespace Enemy
         [Header("Movement")]
         public float speed;
         public float stoppingDistance;
-        private Vector3 _newPosition;
+        private Vector3 _target;
+        public Vector2Int _currentPositionInGrid = Vector2Int.zero;
+        public List<Vector2Int> _neighbours;
         
         [Header("Attack")]
         public float attackRange;
@@ -26,11 +29,13 @@ namespace Enemy
         [Header("References")]
         public GameObject player;
         public NavMeshAgent agent;
+        public LevelGenerationScript levelGen;
         
         [Header("Sight")]
         public float fieldOfView;
         public float viewDistance;
         public LayerMask layerToSee;
+        private bool _islevelGenNull;
 
         private void Start()
         {
@@ -39,7 +44,12 @@ namespace Enemy
 
             if (agent == null)
                 agent = GetComponent<NavMeshAgent>();
-
+            
+            if (levelGen == null)
+                levelGen = GameObject.FindGameObjectWithTag("LevelGenerator").GetComponent<LevelGenerationScript>();
+            
+            _islevelGenNull = levelGen == null;   
+            
             agent.speed = speed;
             agent.stoppingDistance = stoppingDistance;
         }
@@ -47,39 +57,39 @@ namespace Enemy
         private void Update()
         {
             //If the player is in the enemy's field of view and within the enemy's view distance, the enemy will move towards the player, else tha enemy will roam around
-            if (inFOV)
+            if (InFOV)
             {
-                Position = (player.transform.position);
+                TargetPosition = (player.transform.position);
             }
             else
             {
-                //If the enemy is not moving, it will generate a new position to move to
-                if (!agent.hasPath)
-                {
-                    Position += new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
-                } else if (agent.remainingDistance <= agent.stoppingDistance) //If the enemy is close enough to the position it is moving to, it will generate a new position to move to
-                {
-                    Position += new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
-                }
+                if (_islevelGenNull) return;
+                _currentPositionInGrid = levelGen.GetGridPosition(transform.position);
+                if (agent.hasPath) return;
+                if (agent.remainingDistance > agent.stoppingDistance) return;
+                _neighbours = levelGen.RoomGraph.Neighbours(_currentPositionInGrid);
+                if (_neighbours.Count == 0) return;
+                var randomNeighbour = _neighbours[Random.Range(0, _neighbours.Count)];
+                TargetPosition = levelGen.GetPositionInGrid(randomNeighbour);
             }
         }
 
-        private Vector3 Position
+        private Vector3 TargetPosition
         {
             get
             {
-                if (_newPosition == Vector3.zero)
-                    _newPosition = transform.position;
-                return _newPosition;
+                if (_target == Vector3.zero)
+                    _target = transform.position;
+                return _target;
             }
             set
             {
-                _newPosition = value;
-                agent.SetDestination(_newPosition);
+                _target = value;
+                agent.SetDestination(_target);
             }
         }
     
-        public bool inFOV
+        public bool InFOV
         {
             get
             {
@@ -109,7 +119,7 @@ namespace Enemy
         private void OnDrawGizmos()
         {
             //Draw FOV and if the player is in it
-            Gizmos.color = player ? inFOV ? Color.green : Color.red : Color.yellow;
+            Gizmos.color = player ? InFOV ? Color.green : Color.red : Color.yellow;
             Gizmos.DrawRay(transform.position, transform.forward * viewDistance);
             Gizmos.DrawRay(transform.position, 
             Quaternion.AngleAxis(fieldOfView * 0.5f, transform.up) * transform.forward * viewDistance);
@@ -122,7 +132,7 @@ namespace Enemy
             
             //Draw the position the enemy is moving to
             Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(Position, 0.5f);
+            Gizmos.DrawSphere(TargetPosition, 0.5f);
         }
     }
 }

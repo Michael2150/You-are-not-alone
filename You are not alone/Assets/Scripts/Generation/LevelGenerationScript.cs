@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Enums;
 using Generation.VazGriz_Generation_Scripts;
@@ -22,6 +23,7 @@ namespace Generation
         [SerializeField] private bool showGrid = false;
         [SerializeField] private bool showPath = true;
         [SerializeField] private bool showRooms = true;
+        [SerializeField] private bool _showMidpoints = false;
 
         private const int RoomPathCost = 10;
         private const int NonePathCost = 5;
@@ -32,10 +34,17 @@ namespace Generation
         private List<Generator2D.Room> _rooms;
         private Delaunay2D _delaunay;
         private HashSet<Prim.Edge> _selectedEdges;
-        private Graph<Vector2Int> _roomsGraph;
+        private Graph<Vector2Int> _roomsRoomGraph;
 
         public Grid2D<CellState> Grid => _grid;
         public Vector3Int BlockSize => blockSize;
+        public Graph<Vector2Int> RoomGraph => _roomsRoomGraph;
+
+
+        private void Start()
+        {
+            GenerateLevel();
+        }
 
         public Grid2D<CellState> GenerateLevel()
         {
@@ -77,12 +86,13 @@ namespace Generation
 
         private void CreateGraph()
         {
-            _roomsGraph = new Graph<Vector2Int>();
+            _roomsRoomGraph = new Graph<Vector2Int>();
             for (int x = 0; x < _grid.Size.x; x++)
             {
                 for (int y = 0; y < _grid.Size.y; y++)
                 {
-                    if (EnumHelpers.CellIsOccupied(_grid[x, y]))
+                    var cell = _grid[x, y];
+                    if (EnumHelpers.CellIsOccupied(cell))
                     {
                         //Check the cells around it
                         for (int i = -1; i <= 1; i++)
@@ -96,14 +106,14 @@ namespace Generation
                                 {
                                     var vector2Int = new Vector2Int(x, y);
                                     var vector2Int1 = new Vector2Int(x + i, y + j);
-                                    _roomsGraph.AddEdge(vector2Int, vector2Int1);
+                                    RoomGraph.AddEdge(vector2Int, vector2Int1);
                                 }
                             }
                         }
                     }
                 }
             }
-            Debug.Log($"Vertices: {_roomsGraph.VertexCount}, Edges: {_roomsGraph.EdgeCount}");
+            Debug.Log($"Vertices: {_roomsRoomGraph.VertexCount}, Edges: {_roomsRoomGraph.EdgeCount}");
         }
 
         private void PlaceRooms()
@@ -146,7 +156,8 @@ namespace Generation
             List<Vertex> vertices = new List<Vertex>();
         
             foreach (var room in _rooms) {
-                vertices.Add(new Vertex<Generator2D.Room>((Vector2)room.Bounds.position + ((Vector2)room.Bounds.size) / 2, room));
+                vertices.Add(new Vertex<Generator2D.Room>((Vector2)room.Bounds.position + 
+                                                          ((Vector2)room.Bounds.size) / 2, room));
             }
         
             _delaunay = Delaunay2D.Triangulate(vertices);
@@ -215,14 +226,6 @@ namespace Generation
         
                         if (i > 0) {
                             var prev = path[i - 1];
-        
-                            var delta = current - prev;
-                        }
-                    }
-        
-                    foreach (var pos in path) {
-                        if (_grid[pos] == CellState.Hallway) {
-                            //TODO: PlaceHallway(pos);
                         }
                     }
                 }
@@ -246,7 +249,9 @@ namespace Generation
                 {
                     for (int y = 0; y < _grid.Size.y; y++)
                     {
-                        var pos = new Vector3(x*blockSize.x, 0, y*blockSize.z);
+                        var grid_pos = new Vector2Int(x, y);
+                        var cornerPositionInGrid = GetPositionInGrid(grid_pos);
+                        var middlePositionInGrid = GetPositionInGrid(grid_pos);
                         var cell = _grid[x, y];
                         switch (cell)
                         {
@@ -263,10 +268,25 @@ namespace Generation
                                 Gizmos.color = new Color(1,1,1, 0.1f);
                                 break;
                         }
-                        Gizmos.DrawCube(pos, blockSize);
+                        Gizmos.DrawCube(cornerPositionInGrid, blockSize);
+                        
+                        if (!_showMidpoints) continue;
+                        Gizmos.color = Color.blue;
+                        Gizmos.DrawSphere(middlePositionInGrid, 1f);
                     }
                 }
             }
+        }
+
+        public Vector2Int GetGridPosition(Vector3 transformPosition)
+        {
+            return new Vector2Int(Mathf.FloorToInt(transformPosition.x / blockSize.x), 
+                                    Mathf.FloorToInt(transformPosition.z / blockSize.z));
+        }
+        
+        public Vector3 GetPositionInGrid(Vector2Int gridPosition)
+        {
+            return new Vector3(gridPosition.x * blockSize.x, 0, gridPosition.y * blockSize.z);
         }
     }
 }

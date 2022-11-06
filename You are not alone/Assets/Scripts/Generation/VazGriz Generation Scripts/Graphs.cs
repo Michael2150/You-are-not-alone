@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 namespace Graphs {
     [Obsolete(" This class is obsolete. Use Vertex<T> instead.", false)]
@@ -19,11 +21,11 @@ namespace Graphs {
             if (obj is Vertex v) {
                 return Position == v.Position;
             }
-
             return false;
         }
 
         public bool Equals(Vertex other) {
+            if (other == null) return false;
             return Position == other.Position;
         }
 
@@ -33,7 +35,7 @@ namespace Graphs {
     }
 
     public class Vertex<T> : Vertex {
-        public T Item { get; private set; }
+        public T Item { get; }
 
         public Vertex(T item) {
             Item = item;
@@ -41,6 +43,23 @@ namespace Graphs {
 
         public Vertex(Vector3 position, T item) : base(position) {
             Item = item;
+        }
+        
+        public override bool Equals(object obj) {
+            if (obj is Vertex<T> v) {
+                return Item.Equals(v.Item);
+            }
+            return false;
+        }
+
+        protected bool Equals(Vertex<T> other)
+        {
+            return base.Equals(other) && EqualityComparer<T>.Default.Equals(Item, other.Item);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), Item);
         }
     }
 
@@ -123,49 +142,72 @@ namespace Graphs {
         }
     }
     
+    /// <summary>
+    ///    A graph of vertices objects. Each vertex can have a list all the neighbor vertices it is connected to.
+    ///    This class needs to be able to add values, remove values, and find values in the graph.
+    ///    This class also needs to find the neighbors of a vertex based on the vertex's value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Graph<T> {
-        private List<Vertex<T>> Vertices { get; set; }
-        private List<Edge<T>> Edges { get; set; }
+        private readonly List<GraphVertex<T>> _vertices = new List<GraphVertex<T>>();
 
-        public Graph() {
-            Vertices = new List<Vertex<T>>();
-            Edges = new List<Edge<T>>();
-        }
-
-        public void AddEdge(T u, T v) {
-            var vertexU = Vertices.Find(vertex => vertex.Item.Equals(u));
-            if (vertexU == null) {
-                vertexU = new Vertex<T>(u);
-                Vertices.Add(vertexU);
-            }
-            
-            var vertexV = Vertices.Find(vertex => vertex.Item.Equals(v));
-            if (vertexV == null) {
-                vertexV = new Vertex<T>(v);
-                Vertices.Add(vertexV);
-            }
-            
-            Edges.Add(new Edge<T>(vertexU, vertexV));
-        }
-
-        private Vertex<T> GetVertex(T item) {
-            return Vertices.Find(v => v.Item.Equals(item));
-        }
-
-        public T[] Neighbours(T item) {
-            var vertex = GetVertex(item);
-            var neighbours = new List<T>();
-            foreach (var edge in Edges) {
-                if (edge.U.Equals(vertex)) {
-                    neighbours.Add(edge.V.Item);
-                } else if (edge.V.Equals(vertex)) {
-                    neighbours.Add(edge.U.Item);
-                }
-            }
-            return neighbours.ToArray();
+        public void AddEdge(T u, T v)
+        {
+            var vertexU = AddVertex(u);
+            var vertexV = AddVertex(v);
+            vertexU.AddNeighbors(vertexV);
+            vertexV.AddNeighbors(vertexU);
         }
         
-        public int VertexCount => Vertices.Count;
-        public int EdgeCount => Edges.Count;
+        private GraphVertex<T> AddVertex(T value) {
+            var vertex = GetVertex(value);
+            if (vertex == null) {
+                vertex = new GraphVertex<T>(new Vertex<T>(value));
+                _vertices.Add(vertex);
+            }
+            return vertex;
+        }
+
+        private GraphVertex<T> GetVertex(T value)
+        {
+            return _vertices.Find(v => v.Vertex.Item.Equals(value));
+        }
+
+        private List<Edge<T>> GetEdges() {
+            var edges = new List<Edge<T>>();
+            foreach (var vertex in _vertices) {
+                foreach (var neighbor in vertex.Neighbors) {
+                    var edge = new Edge<T>(vertex.Vertex, neighbor);
+                    if (!edges.Contains(edge)) {
+                        edges.Add(edge);
+                    }
+                }
+            }
+            return edges;
+        }
+        
+        public List<T> Neighbours(T value) {
+            var vertex = GetVertex(value);
+            if (vertex == null) return new List<T>();
+            return vertex.Neighbors.Select(v => v.Item).ToList();
+        }
+
+        public int VertexCount => _vertices.Count;
+        public int EdgeCount => GetEdges().Count;
+
+        private class GraphVertex<TG> {
+            public Vertex<TG> Vertex { get; set; }
+            public List<Vertex<TG>> Neighbors { get; set; } = new List<Vertex<TG>>();
+
+            public GraphVertex(Vertex<TG> vertex) {
+                Vertex = vertex;
+            }
+
+            public void AddNeighbors(GraphVertex<TG> vertexV)
+            {
+                if (Neighbors.Contains(vertexV.Vertex)) return;
+                Neighbors.Add(vertexV.Vertex);
+            }
+        }
     }
 }

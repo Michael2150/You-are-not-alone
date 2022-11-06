@@ -6,24 +6,22 @@ namespace Enums
     {
         public static bool CellIsOccupied(CellState state)
         {
-            return state is CellState.Active 
-                        or CellState.Hallway 
-                        or CellState.Room;
+            return CellsAreAllowed(CellState.Active, state);
         }
 
 
-        public static bool CellsAreAllowed(CellState allowed_val, CellState received_val)
+        public static bool CellsAreAllowed(CellState allowedVal, CellState receivedVal)
         {
-            switch (allowed_val)
+            switch (allowedVal)
             {
                 case CellState.Active:
-                    return received_val is CellState.Active 
+                    return receivedVal is CellState.Active 
                         or CellState.Hallway 
                         or CellState.Room;
                 case CellState.Any:
                     return true;
                 default:
-                    return allowed_val == received_val;
+                    return allowedVal == receivedVal;
             }
         }
         
