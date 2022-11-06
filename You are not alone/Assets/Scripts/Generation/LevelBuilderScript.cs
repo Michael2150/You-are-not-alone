@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Enums;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Generation
 {

@@ -63,7 +63,7 @@ public class MainMenuScript : MonoBehaviour
     private void Play()
     {
         //Play the Playground scene and close this one
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Playground");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Level_Gen");
     }
     
     private void Mode()
