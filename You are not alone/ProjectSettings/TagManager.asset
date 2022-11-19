@@ -7,6 +7,7 @@ TagManager:
   - CinemachineTarget
   - Enemy
   - LevelGenerator
+  - KeyShard
   layers:
   - Default
   - TransparentFX

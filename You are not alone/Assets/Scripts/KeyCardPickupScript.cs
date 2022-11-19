@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using GameGlobals;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,13 +15,10 @@ public class KeyCardPickupScript : MonoBehaviour{
         
         //Play pickup sound
         AudioSource.PlayClipAtPoint(pickupSound, transform.position);
-        //Play pickup effect
-        //Instantiate(pickupEffect, transform.position, transform.rotation);
-        //Destroy the key shard
+
+        GameManager.Instance.CollectionManager.AddCard();
         
-        //Load the menu scene
-        SceneManager.LoadScene("MainMenu");
-        
+        //Destroy pickup object
         Destroy(gameObject);
     }
 }

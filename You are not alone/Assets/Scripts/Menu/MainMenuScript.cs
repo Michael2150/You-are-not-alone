@@ -1,4 +1,5 @@
 using System;
+using GameGlobals;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -16,12 +17,12 @@ public class MainMenuScript : MonoBehaviour
     [SerializeField] private Button _btnLastSeed;
     [SerializeField] private TMP_Text _txtLastSeed;
     
-    [SerializeField] private long _seed;
-    [SerializeField] private long _lastSeed;
+    [SerializeField] private int _seed;
+    [SerializeField] private int _lastSeed;
     
     [SerializeField] private GamemodeScript _gamemodeScript;
 
-    public long lastSeed
+    public int lastSeed
     {
         get => _lastSeed;
         set
@@ -30,9 +31,29 @@ public class MainMenuScript : MonoBehaviour
             _txtLastSeed.text = "Last Seed: " + _lastSeed.ToString();
         }
     }
-    public long seed
+    public int seed
     {
-        get =>  long.Parse(_edtSeed.text);
+        get
+        {
+            if (_edtSeed.text == "")
+            {
+                _seed = GameManager.Instance.SessionData.NewSeed;
+                _edtSeed.text = _seed.ToString();
+            }
+            else
+            {
+                if (int.TryParse(_edtSeed.text, out _seed))
+                {
+                    _seed = int.Parse(_edtSeed.text);
+                }
+                else
+                {
+                    _seed = GameManager.Instance.SessionData.NewSeed;
+                    _edtSeed.text = _seed.ToString();
+                }
+            }
+            return _seed;
+        }
         set
         {
             _seed = value;
@@ -47,7 +68,7 @@ public class MainMenuScript : MonoBehaviour
         _exitButton.onClick.AddListener(Exit);
         _btnLastSeed.onClick.AddListener(copySeed);
         
-        long randomSeed = (long)Random.Range(1000000000000000, 9999999999999999);
+        int randomSeed = GameManager.Instance.SessionData.NewSeed;
         seed = randomSeed;
         lastSeed = randomSeed;
         
@@ -62,8 +83,7 @@ public class MainMenuScript : MonoBehaviour
 
     private void Play()
     {
-        //Play the Playground scene and close this one
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Level_Gen");
+        GameManager.Instance.SessionData.StartSession(seed);
     }
     
     private void Mode()

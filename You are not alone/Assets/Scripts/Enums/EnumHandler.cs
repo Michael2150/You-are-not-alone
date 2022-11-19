@@ -24,8 +24,6 @@ namespace Enums
                     return allowedVal == receivedVal;
             }
         }
-        
-        
     }
     
     public enum CellState

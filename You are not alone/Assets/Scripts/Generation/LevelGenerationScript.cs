@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Enums;
+using GameGlobals;
 using Generation.VazGriz_Generation_Scripts;
 using Graphs;
 using Unity.VisualScripting;
@@ -12,7 +13,7 @@ namespace Generation
     public class LevelGenerationScript : MonoBehaviour
     {
         [Header("Generation Settings")]
-        [SerializeField] private uint seed = 1;
+        [SerializeField] private int _seed = 1;
         [SerializeField] private Vector3Int blockSize = Vector3Int.one*5;
         [SerializeField] private Vector2Int mapSize = Vector2Int.one*10;
         [SerializeField] private Vector2Int minRoomSize = Vector2Int.one;
@@ -43,12 +44,19 @@ namespace Generation
 
         private void Start()
         {
-            GenerateLevel();
+            if (GameManager.Instance.isFirstTime)
+                GenerateLevel();
         }
 
         public Grid2D<CellState> GenerateLevel()
         {
-            _random = new Random(seed: (uint)seed);
+            return GenerateLevel(_seed);
+        }
+
+        public Grid2D<CellState> GenerateLevel(int seed)
+        {
+            _seed = seed;
+            _random = new Random((uint)seed);
             _grid = new Grid2D<CellState>(mapSize, Vector2Int.zero);
             _rooms = new List<Generator2D.Room>();
             
@@ -287,6 +295,22 @@ namespace Generation
         public Vector3 GetPositionInGrid(Vector2Int gridPosition)
         {
             return new Vector3(gridPosition.x * blockSize.x, 0, gridPosition.y * blockSize.z);
+        }
+
+        public List<Vector3> GetRoomPositions()
+        {
+            var roomPositions = new List<Vector3>();
+            for (int x = 0; x < _grid.Size.x; x++)
+            {
+                for (int y = 0; y < _grid.Size.y; y++)
+                {
+                    if (_grid[x, y] == CellState.Room)
+                    {
+                        roomPositions.Add(GetPositionInGrid(new Vector2Int(x, y)));
+                    }
+                }
+            }
+            return roomPositions;
         }
     }
 }

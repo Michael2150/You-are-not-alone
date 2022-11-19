@@ -38,6 +38,8 @@ namespace Player
 		private Camera _playerCamera;
 		private float _defaultHeight;
 
+		public float CurrentSpeed => _currentSpeed;
+
 		private void Start()
 		{
 			_controller = GetComponent<CharacterController>();
@@ -68,7 +70,7 @@ namespace Player
 			var targetVelocity = new Vector3(input.x, _velocity.y, input.y);
 			targetVelocity = transform.TransformDirection(targetVelocity);
 			_velocity = targetVelocity;
-			_currentSpeed = _velocity.magnitude;
+			_currentSpeed = input.magnitude;
 		}
 		
 		private void CalculateJumping()
@@ -109,8 +111,8 @@ namespace Player
 		private void OnDrawGizmos()
 		{
 			//Draw sphere to show grounded area and if player is grounded
-			Gizmos.color = _controller.isGrounded ? Color.green : Color.red;
-			Gizmos.DrawSphere(transform.position + new Vector3(0, -0.55f, 0), 0.5f);
+			//Gizmos.color = _controller.isGrounded ? Color.green : Color.red;
+			//Gizmos.DrawSphere(transform.position + new Vector3(0, -0.55f, 0), 0.5f);
 		}
 	}
 }

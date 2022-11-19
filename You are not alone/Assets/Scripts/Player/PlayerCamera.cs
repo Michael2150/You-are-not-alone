@@ -27,15 +27,17 @@ namespace Player
 
         private PlayerInputManager _inputManager;
         private PlayerMovement _playerMovement;
+        private Vector3 StartPosition;
         
         private void Start()
         {
             _inputManager = GetComponent<PlayerInputManager>();
             _playerMovement = GetComponent<PlayerMovement>();
 
-            var eulerAngles = transform.eulerAngles;
-            rotation.y = eulerAngles.x;
-            rotation.x = eulerAngles.y;
+            //Face the camera forward
+            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(0, 0, 0);
+            
+            StartPosition = CinemachineCameraTarget.transform.localPosition;
             
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -63,6 +65,7 @@ namespace Player
             
             //Rotate the camera
             CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(rotation.x, 0.0f, 0.0f);
+            CinemachineCameraTarget.transform.localPosition = StartPosition;
             //Rotate the player
             transform.rotation = Quaternion.Euler(0.0f, rotation.y, 0.0f);
         }

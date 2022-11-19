@@ -1,4 +1,8 @@
+using System;
+using GameGlobals.GameManager_Components;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace GameGlobals
 {
@@ -28,6 +32,23 @@ namespace GameGlobals
         }
 
 
+        [SerializeField] private CollectionManager collectionManager = new CollectionManager();
+        public CollectionManager CollectionManager => collectionManager;
+        
+        [SerializeField] private SessionData sessionData = new SessionData();
+        public SessionData SessionData => sessionData;
 
+        private void Start()
+        {
+            SessionData.OnSessionLoadUpdate += ((complete, msg) => Debug.Log(msg) );
+        }
+        
+        public void OnCollectionComplete()
+        {
+            SessionData.EndSession(true);
+            
+            //Load the Game Over Scene
+            SceneManager.LoadScene((int)Scenes.GAME_OVER);
+        }
     }
 }
