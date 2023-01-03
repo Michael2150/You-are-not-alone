@@ -35,12 +35,8 @@ namespace GameGlobals.GameManager_Components
 
         public void GetAllKeyShardsInScene()
         {
-            //TODO: Get all key shards in scene and add them to the collection
             var keyShards = GameObject.FindGameObjectsWithTag("KeyShard");
             CardsToCollect = keyShards.Length;
-
-            //TODO: REMOVE THIS LINE
-            CardsToCollect = 10;
         }
     }
 }

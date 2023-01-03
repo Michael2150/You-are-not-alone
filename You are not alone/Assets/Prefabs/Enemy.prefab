@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3709ba5b3a041449b777930f714fad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 4
   stoppingDistance: 1
   _currentPositionInGrid: {x: 0, y: 0}
   _neighbours: []

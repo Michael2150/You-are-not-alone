@@ -7,15 +7,23 @@ using Random = UnityEngine.Random;
 
 namespace GameGlobals.GameManager_Components
 {
+    public enum Difficulty
+    {
+        Easy,
+        Medium,
+        Hard
+    }
+    
     [Serializable]
     public class SessionData
     {
         //Keep track of the current session time
-        [SerializeField]  float sessionStartTime = 0.0f;
-        [SerializeField]  float sessionEndTime = 0.0f;
-        [SerializeField]  int _seed = 0;
+        [SerializeField] float sessionStartTime = 0.0f;
+        [SerializeField] float sessionEndTime = 0.0f;
+        [SerializeField] int _seed = 0;
+        [SerializeField] public Difficulty _difficulty = Difficulty.Easy;
         public bool DidWin { get; private set; } = false;
-        
+
         public event Action<float, string> OnSessionLoadUpdate;
 
         public void StartSession()
@@ -27,6 +35,7 @@ namespace GameGlobals.GameManager_Components
         {
             //Seed the random number generator
             Seed = seed;
+            Random.InitState(seed);
             
             LoadSession();
             GameManager.Instance.CollectionManager.ResetCollection();
@@ -63,7 +72,7 @@ namespace GameGlobals.GameManager_Components
                 OnSessionLoadUpdate?.Invoke(0.9f, "Setting up Player");
                 var playerSetup = levelGenerator.GetComponent<PlayerSetup>();
                 playerSetup.SetupPlayer();
-                
+
                 //Loading Complete
                 OnSessionLoadUpdate?.Invoke(1, "Loading Complete");
                 //Destroy the current scene and move to the one just loaded

@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Enemy;
 using GameGlobals;
+using GameGlobals.GameManager_Components;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,6 +12,11 @@ namespace Generation
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private LevelGenerationScript levelGenerator;
         [SerializeField] private GameObject collectiblePrefab;
+        [SerializeField] private Dictionary<Difficulty, int> collectibleCount = new() {
+            {Difficulty.Easy, 5},
+            {Difficulty.Medium, 10},
+            {Difficulty.Hard, 15}
+        };
 
         private void Start()
         {
@@ -25,7 +31,7 @@ namespace Generation
             //If the player already exists in the scene, destroy it
             if (GameObject.FindGameObjectWithTag("Player") != null)
                 DestroyImmediate(GameObject.FindGameObjectWithTag("Player"));
-            
+
             //Spawn the player at a random room in the level
             List<Vector3> roomPositions = levelGenerator.GetRoomPositions();
             var playerPosition = roomPositions[Random.Range(0, roomPositions.Count)];
@@ -35,16 +41,24 @@ namespace Generation
             collectibleRoot.transform.parent = transform;
             //Remove player position from the list of room positions
             roomPositions.Remove(playerPosition);
-            //Spawn a collectible in the remaining rooms
-            foreach (var roomPosition in roomPositions)
+            //Spawn the required amount of collectibles
+            for (var i = 0; i < collectibleCount[GameManager.Instance.SessionData._difficulty]; i++)
             {
-                var obj = Instantiate(collectiblePrefab, roomPosition - Vector3.up, Quaternion.identity);
-                obj.transform.parent = collectibleRoot.transform;
+                var collectiblePosition = roomPositions[Random.Range(0, roomPositions.Count)];
+                roomPositions.Remove(collectiblePosition);
+                Instantiate(collectiblePrefab, collectiblePosition - Vector3.up, Quaternion.identity, collectibleRoot.transform);
             }
-
-
+            
+            //Set up the key cards
+            GameManager.Instance.CollectionManager.ResetCollection();
+            GameManager.Instance.CollectionManager.GetAllKeyShardsInScene();
+            
             //Spawn the player
-            Instantiate(playerPrefab, playerPosition + Vector3.up, Quaternion.identity);
+            var player = Instantiate(playerPrefab, playerPosition + Vector3.up, Quaternion.identity);
+            
+            //Set the player as the target for the enemy
+            var enemy = GameObject.FindGameObjectWithTag("Enemy");
+            enemy.GetComponent<EnemyNav>().SetPlayer(player);
         }
     }
 }

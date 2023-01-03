@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameGlobals;
+using GameGlobals.GameManager_Components;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,4 +55,25 @@ public class GamemodeScript : MonoBehaviour
             go.GetComponent<Button>().enabled = visible;
         }
     }
+
+    private void changeGameModeClicked(Difficulty difficulty)
+    {
+        GameManager.Instance.SessionData._difficulty = difficulty;
+    }
+    
+    public void easyClicked()
+    {
+        changeGameModeClicked(Difficulty.Easy);
+    }
+    
+    public void mediumClicked()
+    {
+        changeGameModeClicked(Difficulty.Medium);
+    }
+    
+    public void hardClicked()
+    {
+        changeGameModeClicked(Difficulty.Hard);
+    }
+    
 }

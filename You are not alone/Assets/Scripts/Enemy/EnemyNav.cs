@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Generation;
 using UnityEngine;
 using UnityEngine.AI;
@@ -85,7 +83,7 @@ namespace Enemy
             set
             {
                 _target = value;
-                agent.SetDestination(_target);
+                agent.SetDestination(_target + (Vector3.down * 3f));
             }
         }
     
@@ -124,15 +122,19 @@ namespace Enemy
             Gizmos.DrawRay(transform.position, 
             Quaternion.AngleAxis(fieldOfView * 0.5f, transform.up) * transform.forward * viewDistance);
             Gizmos.DrawRay(transform.position, 
-            Quaternion.AngleAxis(-fieldOfView * 0.5f, transform.up) * transform.forward * viewDistance);
-            
+                Quaternion.AngleAxis(-fieldOfView * 0.5f, transform.up) * transform.forward * viewDistance);
             //Draw attack range and if the player is in it
             Gizmos.color = player ? inAttackRange ? Color.green : Color.red : Color.red;
             Gizmos.DrawWireSphere(transform.position, attackRange);
-            
             //Draw the position the enemy is moving to
             Gizmos.color = Color.magenta;
             Gizmos.DrawSphere(TargetPosition, 0.5f);
+        }
+
+        public void SetPlayer(GameObject o)
+        {
+            player = o; 
+            TargetPosition = player.transform.position; 
         }
     }
 }
